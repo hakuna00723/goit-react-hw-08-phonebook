@@ -1,77 +1,70 @@
-import { Formik, ErrorMessage } from 'formik';
-import { useSelector, useDispatch } from 'react-redux';
-import * as yup from 'yup';
-import { FormStylized, FieldStylized, AddContBtn } from './ContactForm.styled';
-import { selectContacts } from 'redux/selectors';
-import { fetchAddContact } from 'redux/operations';
-
-const schema = yup.object().shape({
-  name: yup
-    .string()
-    .matches(/^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/, {
-      message:
-        "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan",
-      excludeEmptyString: true,
-    })
-    .required('⚠️Please enter name.'),
-  number: yup
-    .string()
-    .matches(
-      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
-      {
-        message:
-          'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +',
-        excludeEmptyString: true,
-      }
-    )
-    .required('⚠️Please enter number.'),
-});
+import { ErrorMessage } from 'formik';
+import { object, string } from 'yup';
+import PropTypes from 'prop-types';
+import {
+  FormBox,
+  InputName,
+  InputTel,
+  Button,
+  FormikWrapper,
+  Message,
+} from './ContactForm.styled';
 
 const initialValues = {
   name: '',
   number: '',
 };
 
-export const ContactForm = () => {
-  const contacts = useSelector(selectContacts);
-  const dispatch = useDispatch();
+const userSchema = object({
+  name: string()
+    .matches(
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
+      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+    )
+    .required('⚠️Please enter name.'),
+  number: string()
+    .matches(
+      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
+      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+    )
+    .required('⚠️Please enter number.'),
+});
 
-  const handleSubmit = (values, { resetForm }) => {
-    const checkedContact = contacts.find(
-      contact => contact.name.toLowerCase() === values.name.toLowerCase()
-    );
-
-    if (checkedContact) {
-      alert(`a contact ${values.name} already exists`);
-      return;
-    }
-
-    dispatch(fetchAddContact(values));
-    resetForm({
-      name: '',
-      number: '',
-    });
-  };
+const FormContact = ({ onSubmit }) => {
+  function handleSubmit({ name, number }, { resetForm }) {
+    onSubmit(name, number);
+    resetForm();
+  }
 
   return (
-    <Formik
+    <FormikWrapper
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={schema}
+      validationSchema={userSchema}
     >
-      <FormStylized autoComplete="off">
-        <label htmlFor="name">
-          Name
-          <FieldStylized type="text" name="name"></FieldStylized>
-          <ErrorMessage name="name" />
+      <FormBox autoComplete="off">
+        <label>
+          <span>Name</span>
+          <InputName placeholder="Enter contact name" type="text" name="name" />
+          <ErrorMessage component={Message} name="name" />
         </label>
-        <label htmlFor="name">
-          Number
-          <FieldStylized type="tel" name="number"></FieldStylized>
-          <ErrorMessage name="number" />
+        <label>
+          <span>Phone</span>
+          <InputTel
+            placeholder="Enter contact phone"
+            type="tel"
+            name="number"
+          />
+          <ErrorMessage component={Message} name="number" />
         </label>
-        <AddContBtn type="submit">Add Contact</AddContBtn>
-      </FormStylized>
-    </Formik>
+        <Button type="submit">Add contact</Button>
+      </FormBox>
+    </FormikWrapper>
   );
 };
+
+FormContact.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default FormContact;
