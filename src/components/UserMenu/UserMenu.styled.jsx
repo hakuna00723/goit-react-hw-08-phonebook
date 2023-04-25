@@ -1,31 +1,35 @@
 import styled from 'styled-components';
 
-export const ListElem = styled.li`
+export const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 12px;
 `;
 
-export const Text = styled.p`
-  font-size: 20px;
+export const UserName = styled.p`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #000000;
 `;
 
 export const Button = styled.button`
-  background-color: pink;
+  background-color: aquamarine;
   display: flex;
-  width: 80px;
-  min-height: 80px;
-  font-size: 20px;
+  width: 120px;
+  height: 40px;
+  font-size: 25px;
   font-weight: 700;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   border: none;
-  border-radius: 50%;
-  box-shadow: 0 9px #999;
+  border-radius: 40px;
+  box-shadow: 0 5px #999;
 
   &:hover {
-    background-color: #f7667e;
+    background-color: rgb(0, 255, 170);
     color: #ffffff;
   }
 
