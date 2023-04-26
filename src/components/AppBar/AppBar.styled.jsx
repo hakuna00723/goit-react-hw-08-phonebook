@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const Header = styled.header`
+  background: white;
+  opacity: 0.9;
   position: sticky;
   top: -1px;
   padding: 15px 30px;
